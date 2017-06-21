@@ -1,6 +1,6 @@
 import axios from 'axios'
 import firebase from 'firebase'
-import { firebaseMutations, firebaseAction } from 'vuexfire'
+// import { firebaseMutations, firebaseAction } from 'vuexfire'
 
 if (process.env.VUE_ENV !== 'server') {
   const config = {
@@ -13,19 +13,8 @@ if (process.env.VUE_ENV !== 'server') {
   }
   var firebaseApp = firebase.initializeApp(config)
   var db = firebaseApp.database()
-  var mutations = {
-    SET_BOOKS_LIST: (state, { books }) => {
-      state.books = books
-    },
-    ...firebaseMutations
-  }
-} else {
-  mutations = {
-    SET_BOOKS_LIST: (state, { books }) => {
-      state.books = books
-    }
-  }
 }
+
 const books = {
   state: {
     books: [
@@ -36,25 +25,31 @@ const books = {
   },
   actions: {
     LOAD_BOOKS: ({ commit, state }) => {
-      console.log(process.env.VUE_ENV)
       if (process.env.VUE_ENV === 'server') {
-        console.log('hello')
-        axios.get('https://booklike-66ae2.firebaseio.com/books.json?orderBy="title"&startAt=3').then((response) => {
-          commit('SET_BOOKS_LIST', { books: response.data })
+        axios.get('https://booklike-66ae2.firebaseio.com/books.json').then((response) => {
+          commit('SET_BOOKS_LIST', response.data)
         }, (err) => {
           console.log(err)
         })
       } else {
         console.log('leo')
-        var ref = db.ref('books')
-        firebaseAction(({ bindFirebaseRef }) => {
-          bindFirebaseRef('books', ref)
+        var booksRef = db.ref('books')
+        booksRef.on('value', function (snapshot) {
+          commit('SET_BOOKS_LIST', snapshot.val())
+          // var count = snapshot.numChildren()
+          // console.log(count)
+        }, function (errorObject) {
+          console.log('The read failed: ' + errorObject.code)
         })
       }
     }
   },
-  mutations
-//   getters: {
-//    }
+  mutations: {
+    SET_BOOKS_LIST: (state, books) => {
+      state.books = books.filter(function (book) {
+        return book != null
+      })
+    }
+  }
 }
 export default books
