@@ -5,8 +5,8 @@
       <li  v-for="(book, index) in books">
         <h2>{{book.title}}</h2>
         <input v-model="book.title" 
-          @blur="doneEdit(book, index)"
-          @keyup.enter="doneEdit(book, index)">
+          @blur="doneEdit(book)"
+          @keyup.enter="doneEdit(book)">
         <div>
           <label>author:</label>
           <span>{{book.author}} </span>
@@ -35,10 +35,11 @@ export default {
     this.$store.dispatch('LOAD_BOOKS')
   },
   methods: {
-    doneEdit: function (book, index) {
-      var updates = {}
-      updates[index] = book
-      return this.$store.dispatch('SAVE_BOOK', updates)
+    doneEdit: function (book) {
+      this.$store.dispatch('UPDATE_BOOKS')
+    },
+    newBook: function (book) {
+      this.$store.dispatch('CREATE_BOOK', book)
     }
   }
 }
