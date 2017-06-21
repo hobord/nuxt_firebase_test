@@ -32,19 +32,19 @@ const books = {
       }
     },
     CREATE_BOOK: ({ commit, state }, book) => {
-      commit('CREATE_BOOK', book)
+      var newBookRef = state.booksRef.push()
+      newBookRef.set(book)
     },
     UPDATE_BOOKS: ({ commit, state }) => {
       state.booksRef.update(state.books)
+    },
+    UPDATE_BOOK: ({ commit, state }, update) => {
+      state.booksRef.update(update)
     }
   },
   mutations: {
     SET_BOOKS_REF: (state, booksRef) => {
       state.booksRef = booksRef
-    },
-    CREATE_BOOK: (state, book) => {
-      var newBookRef = state.booksRef.push()
-      newBookRef.set(book)
     },
     SET_BOOKS_LIST: (state, books) => {
       state.books = books
