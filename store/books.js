@@ -18,7 +18,6 @@ const books = {
           console.log(err)
         })
       } else {
-        console.log('leo')
         var booksRef = firebaseApp.database().ref('books')
         booksRef.on('value', function (snapshot) {
           commit('SET_BOOKS_LIST', snapshot.val())
