@@ -32,14 +32,13 @@ const books = {
       }
     },
     CREATE_BOOK: ({ commit, state }, book) => {
-      var newBookRef = state.booksRef.push()
-      newBookRef.set(book)
-    },
-    UPDATE_BOOKS: ({ commit, state }) => {
-      state.booksRef.update(state.books)
+      state.booksRef.push().set(book)
     },
     UPDATE_BOOK: ({ commit, state }, update) => {
       state.booksRef.update(update)
+    },
+    UPDATE_BOOKS: ({ commit, state }) => {
+      state.booksRef.update(state.books)
     }
   },
   mutations: {
